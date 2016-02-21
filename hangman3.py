@@ -9,6 +9,7 @@ black=(0,0,0)
 magenta=(238,0,238)
 blue=(0,0,255)
 red=(255,0,0)
+brown=(139,90,0)
 words=[]
 numbers=[]
 numbers3=[]
@@ -17,6 +18,8 @@ global food
 food=0
 global mark
 mark=0
+global fine1
+fine1=0
 #global name=""
 gameDisplay=pygame.display.set_mode((800,600))
 pygame.display.set_caption('hangman')
@@ -79,7 +82,7 @@ def player1():
             
 def maingame():
     screen2=True
-
+    global fine1
     while screen2:
         experiment1()
         for event in pygame.event.get():
@@ -94,10 +97,16 @@ def maingame():
                     for items in words:
                         if(items==event.unicode):
                             print("hi")
+                            if(numbers[i]==1):
+                                fine1=1
                             numbers[i]=1
                         i+=1
-                tallymarks()  
-        print(food)
+                tallymarks()
+        v=0
+        while(v<1):
+            print(food)
+            v+=1
+            break
         pygame.display.update()
         
 def printList():
@@ -130,13 +139,8 @@ def experiment1():
         x=35
         y=500
 
-        #drawhangman()
-        if(food==1):
-            pygame.draw.circle(gameDisplay,black,[100,100],40)
-            pygame.draw.rect(gameDisplay, black, [200,300,50,50])
-        elif(food==2):
-            pygame.draw.rect(gameDisplay, black, [100,200, 50, 68])
-            pygame.draw.rect(gameDisplay, black, [200,300,50,50])
+        drawhangman()
+        drawnoose()
             
             
         while o < size:
@@ -149,10 +153,13 @@ def experiment1():
                 gameDisplay.blit(rendered5, (x,y))
             o+=1
             x+=60
-
+        if(food==6):
+            gameOver()
+            
 def tallymarks():
     global food
     global mark
+    global fine1
     i=0
     for items in numbers:
         if(items != numbers3[i]):
@@ -161,6 +168,8 @@ def tallymarks():
         else:
             mark=2
         i+=1
+    if(fine1==1):
+        mark=3
     g=0
     for items2 in numbers:
         numbers3[g]=items2
@@ -168,20 +177,54 @@ def tallymarks():
     while(mark==2):
         i=0
         food+=1
-        break
-        
-
+        break 
+    fine1=0
 
     #drawhangman(james)
 
+def drawnoose():
+    pygame.draw.rect(gameDisplay,brown,[75,50,150,10])
+    pygame.draw.rect(gameDisplay,brown,[75,50,10,250])
+    pygame.draw.rect(gameDisplay,brown,[25,300,110,10])
+    pygame.draw.rect(gameDisplay,brown,[225,50,10,33])
     
-def drawhangman(tacos):
-    if(mark==1):
-        i=0
-        while(i<1):
-            print("cows")
-            tacos+=1
-            i+=1
+def drawhangman():
+        global food
+        if(food==1):
+            pygame.draw.circle(gameDisplay,black,[230,100],20)
+            pygame.draw.circle(gameDisplay,white,[230,100],15)
+        elif(food==2):
+            pygame.draw.circle(gameDisplay,black,[230,100],20)
+            pygame.draw.circle(gameDisplay,white,[230,100],15)
+            pygame.draw.rect(gameDisplay, black, [225,115,10,65])
+
+def gameOver():
+    screen4=True
+    while screen4:
+        for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type==pygame.KEYDOWN:
+                if event.key==pygame.K_UP:
+                    openingscreen()
+                    player1()
+                    maingame()
+                if event.key==pygame.K_DOWN:
+                    pygame.quit()
+                    sys.exit()
+        gameDisplay.fill(black)
+        title="Game Over"
+        title2="You Lose"
+        sys_font=pygame.font.SysFont("None", 60)
+        render2=sys_font.render(title,0,red)
+        gameDisplay.blit(render2, (180, 100))
+        sys_font=pygame.font.SysFont("None", 60)
+        render2=sys_font.render(title2,0,red)
+        gameDisplay.blit(render2, (180, 150))
+        pygame.display.update()
+        
+    
 
 def printWord():
     print(name)
